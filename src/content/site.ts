@@ -9,9 +9,9 @@ export const team = {
 };
 
 export const social = {
-  instagram: "https://www.instagram.com/alem_fll_challenge?mdxt=MWFzemJzZWpqejA4bw==",
+  instagram: "https://www.instagram.com/alem_fll_challenge/",
   instagramHandle: "@alem_fll_challenge",
-  tiktok: "https://www.tiktok.com/@alem_fll_challenge?_r=1&_t=ZS-9AYFTb66nrg",
+  tiktok: "https://www.tiktok.com/@alem_fll_challenge",
   tiktokHandle: "@alem_fll_challenge",
 };
 
