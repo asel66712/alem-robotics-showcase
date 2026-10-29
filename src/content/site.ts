@@ -16,12 +16,13 @@ export const social = {
 };
 
 export const nav = [
+  { id: "top", label: "Басты бет" },
   { id: "about", label: "Біз туралы" },
-  { id: "robot", label: "Робот" },
-  { id: "project", label: "Жоба" },
-  { id: "team", label: "Команда" },
+  { id: "team", label: "Біздің команда" },
+  { id: "robot", label: "Біздің робот" },
+  { id: "project", label: "BIOGLOW" },
   { id: "achievements", label: "Жетістіктер" },
-  { id: "media", label: "Медиа" },
+  { id: "media", label: "Фотогалерея" },
   { id: "contact", label: "Байланыс" },
 ];
 
@@ -40,19 +41,27 @@ export const robotBlocks = [
 ];
 
 export const projectSteps = [
-  { title: "Мәселе", text: "Маусым тақырыбы бойынша таңдалған мәселенің сипаттамасы осында болады." },
+  { title: "Мәселе", text: "BIOGLOW жобасы шешетін мәселенің сипаттамасы кейін қосылады." },
   { title: "Зерттеу", text: "Сарапшылармен сұхбаттар мен жиналған деректер осында жазылады." },
   { title: "Шешім", text: "Команда ұсынған идеяның қысқаша сипаттамасы." },
   { title: "Прототип", text: "Прототиптің құрылымы мен сынақ кезеңдері." },
   { title: "Нәтижелер", text: "Нәтижелер жоба аяқталғаннан кейін қосылады." },
 ];
 
-// Add real members: { name, role, photo? }
-export const members = Array.from({ length: 6 }, (_, i) => ({
-  name: `Қатысушы ${i + 1}`,
-  role: "Рөлі",
-  photo: "" as string,
-}));
+export const leaders = [
+  { name: "Халиева Жанна Янгибаева", role: "Команда жетекшісі", photo: "" as string },
+  { name: "Қошмұхан Әсел Аралбекқызы", role: "Команда жетекшісі", photo: "" as string },
+];
+
+export const members = [
+  "Қуаныш Нұрәлім Нұрбергенұлы",
+  "Нұрулхан Кәусәр Алмасханқызы",
+  "Нұрболат Нұрсая Нұрсұлтанқызы",
+  "Сарнияз Айділдә Исламқызы",
+  "Көбен Мәди Айбарұлы",
+  "Алдиярбек Бексұлтан Қайратұлы",
+  "Паизхан Амир Тынышбекұлы",
+].map((name) => ({ name, role: "Команда мүшесі", photo: "" as string }));
 
 // Add real events: { date, title, text }
 export const achievements = [
