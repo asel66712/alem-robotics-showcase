@@ -187,10 +187,26 @@ function Index() {
         </div>
       </Section>
 
-      <Section id="social" eyebrow="Әлеуметтік желілер" title="Бізді бақылаңыз">
-        <div className="reveal flex flex-wrap gap-4">
-          <a href={social.instagram} target="_blank" rel="noopener noreferrer" className={btnPrimary}>Instagram</a>
-          <a href={social.tiktok} target="_blank" rel="noopener noreferrer" className={btnGhost}>TikTok</a>
+      <Section id="social" eyebrow="Әлеуметтік желілер" title="Бізді әлеуметтік желілерде бақылаңыз" intro="Біздің роботтар, жобалар және жарыстардан қызықты сәттер!">
+        <div className="grid gap-6 md:grid-cols-2">
+          {[
+            { name: "Instagram", handle: social.instagramHandle, url: social.instagram, label: "Instagram-ға өту", Icon: InstagramIcon, cls: btnPrimary },
+            { name: "TikTok", handle: social.tiktokHandle, url: social.tiktok, label: "TikTok-та көру", Icon: TikTokIcon, cls: btnGhost },
+          ].map(({ name, handle, url, label, Icon, cls }) => (
+            <div key={name} className="glass reveal group relative overflow-hidden p-7">
+              <div className="circuit absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" aria-hidden />
+              <div className="relative flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary text-primary ring-1 ring-primary/30 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                  <Icon className="h-8 w-8" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold">{name}</h3>
+                  <p className="text-sm text-primary">{handle}</p>
+                </div>
+              </div>
+              <a href={url} target="_blank" rel="noopener noreferrer" className={`${cls} relative mt-6 w-full sm:w-auto`}>{label} ↗</a>
+            </div>
+          ))}
         </div>
       </Section>
 
@@ -217,6 +233,10 @@ function Index() {
       </Section>
 
       <footer className="border-t py-8 text-center text-sm text-muted-foreground">
+        <div className="mb-4 flex justify-center gap-3">
+          <a href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/30 transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary"><InstagramIcon className="h-5 w-5" /></a>
+          <a href={social.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/30 transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary"><TikTokIcon className="h-5 w-5" /></a>
+        </div>
         © {new Date().getFullYear()} ALEM Robotics · FLL Team #{team.number}
       </footer>
     </div>
