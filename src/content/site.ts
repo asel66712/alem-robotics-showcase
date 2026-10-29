@@ -9,8 +9,10 @@ export const team = {
 };
 
 export const social = {
-  instagram: "https://instagram.com/", // TODO: replace with real link
-  tiktok: "https://tiktok.com/", // TODO: replace with real link
+  instagram: "https://www.instagram.com/alem_fll_challenge?mdxt=MWFzemJzZWpqejA4bw==",
+  instagramHandle: "@alem_fll_challenge",
+  tiktok: "https://www.tiktok.com/@alem_fll_challenge?_r=1&_t=ZS-9AYFTb66nrg",
+  tiktokHandle: "@alem_fll_challenge",
 };
 
 export const nav = [
