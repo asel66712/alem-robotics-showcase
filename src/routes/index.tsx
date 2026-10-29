@@ -1,24 +1,224 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState, type ReactNode } from "react";
+import {
+  team, social, nav, aboutPoints, robotBlocks, projectSteps, members, achievements, media,
+} from "@/content/site";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "ALEM Robotics #311436 — FIRST LEGO League командасы" },
+      { name: "description", content: "ALEM Robotics — FIRST LEGO League Challenge жарысына қатысатын оқушылар робототехника командасы. Болашақ инженерлері." },
+      { property: "og:title", content: "ALEM Robotics #311436" },
+      { property: "og:description", content: "Болашақ инженерлері. Жаңа идеялар. Үлкен мүмкіндіктер." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function useReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))),
+      { threshold: 0.12 },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
+
+function Section({ id, eyebrow, title, intro, children }: { id: string; eyebrow: string; title: string; intro?: string; children: ReactNode }) {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <section id={id} className="mx-auto max-w-6xl px-5 py-20 md:py-28">
+      <div className="reveal mb-12 max-w-2xl">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-primary">{eyebrow}</p>
+        <h2 className="text-3xl font-bold md:text-4xl">{title}</h2>
+        {intro && <p className="mt-4 leading-relaxed text-muted-foreground">{intro}</p>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Card({ title, text, index }: { title: string; text: string; index?: number }) {
+  return (
+    <div className="glass reveal p-6">
+      {index !== undefined && <span className="font-display text-sm text-primary">0{index + 1}</span>}
+      <h3 className="mt-2 text-lg font-semibold">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+    </div>
+  );
+}
+
+function Placeholder({ label, className = "" }: { label: string; className?: string }) {
+  return (
+    <div className={`placeholder-img flex items-center justify-center text-center text-xs text-muted-foreground ${className}`} role="img" aria-label={label}>
+      <span className="px-3">📷 {label}</span>
+    </div>
+  );
+}
+
+const btn = "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+const btnPrimary = `${btn} bg-primary text-primary-foreground hover:shadow-[0_0_30px_var(--primary)]`;
+const btnGhost = `${btn} border border-primary/40 text-foreground hover:bg-primary/10`;
+
+function Header() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const f = () => setScrolled(window.scrollY > 20);
+    f(); window.addEventListener("scroll", f);
+    return () => window.removeEventListener("scroll", f);
+  }, []);
+  return (
+    <header className={`fixed inset-x-0 top-0 z-50 transition-all ${scrolled || open ? "border-b bg-background/85 backdrop-blur-lg" : ""}`}>
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
+        <a href="#top" className="font-display text-sm font-bold tracking-wider">ALEM<span className="text-primary"> ROBOTICS</span></a>
+        <nav className="hidden gap-6 lg:flex" aria-label="Негізгі мәзір">
+          {nav.map((n) => <a key={n.id} href={`#${n.id}`} className="text-sm text-muted-foreground transition-colors hover:text-primary">{n.label}</a>)}
+        </nav>
+        <button className="lg:hidden rounded-md p-2" aria-label="Мәзір" aria-expanded={open} onClick={() => setOpen(!open)}>
+          <div className="space-y-1.5"><span className="block h-0.5 w-6 bg-foreground" /><span className="block h-0.5 w-6 bg-foreground" /><span className="block h-0.5 w-4 bg-primary" /></div>
+        </button>
+      </div>
+      {open && (
+        <nav className="flex flex-col gap-1 px-5 pb-5 lg:hidden">
+          {nav.map((n) => <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="rounded-lg px-3 py-2 hover:bg-primary/10">{n.label}</a>)}
+        </nav>
+      )}
+    </header>
+  );
+}
+
+function Index() {
+  useReveal();
+  const [sent, setSent] = useState(false);
+  return (
+    <div id="top" className="overflow-x-hidden">
+      <Header />
+
+      {/* HERO */}
+      <section className="relative flex min-h-screen items-center justify-center px-5 pt-16 text-center">
+        <div className="circuit absolute inset-0 animate-pulse-line" aria-hidden />
+        <div className="relative animate-in fade-in slide-in-from-bottom-6 duration-1000">
+          <p className="mb-6 inline-block rounded-full border border-primary/30 px-4 py-1.5 text-xs font-medium tracking-widest text-primary">{team.league.toUpperCase()}</p>
+          <h1 className="text-glow text-5xl font-black sm:text-7xl md:text-8xl">ALEM<br />ROBOTICS</h1>
+          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground md:text-xl">Болашақ инженерлері. Жаңа идеялар. Үлкен мүмкіндіктер.</p>
+          <div className="mt-8 inline-flex items-center gap-3 rounded-2xl border bg-card px-5 py-3">
+            <span className="text-xs uppercase tracking-widest text-muted-foreground">Team number</span>
+            <span className="font-display text-2xl font-bold text-primary">{team.number}</span>
+          </div>
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
+            <a href="#team" className={btnPrimary}>Біздің команда</a>
+            <a href="#project" className={btnGhost}>Жобаларымыз</a>
+          </div>
+        </div>
+      </section>
+
+      <Section id="about" eyebrow="Біз туралы" title="Біз — ALEM Robotics" intro="Біз — FIRST LEGO League Challenge бағдарламасына қатысатын оқушылар командасымыз. Бізді инженерия, бағдарламалау, инновация және командалық жұмыс біріктіреді.">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {aboutPoints.map((p, i) => <Card key={p.title} {...p} index={i} />)}
+        </div>
+      </Section>
+
+      <Section id="robot" eyebrow="Біздің робот" title="Робот және инженерия" intro="Роботымыз маусым миссияларын орындау үшін жобаланған.">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="reveal grid grid-cols-2 gap-4">
+            <Placeholder label="Робот фотосы" className="col-span-2 aspect-video" />
+            <Placeholder label="Механизм фотосы" className="aspect-square" />
+            <Placeholder label="Бағдарлама скриншоты" className="aspect-square" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {robotBlocks.map((b, i) => <Card key={b.title} {...b} index={i} />)}
+          </div>
+        </div>
+      </Section>
+
+      <Section id="project" eyebrow="Инновациялық жоба" title="Маусымдық жоба" intro="FIRST LEGO League маусымының инновациялық жобасы. Мәліметтер жұмыс барысында толықтырылады.">
+        <ol className="grid gap-5 md:grid-cols-5">
+          {projectSteps.map((s, i) => (
+            <li key={s.title} className="glass reveal relative p-5" style={{ transitionDelay: `${i * 80}ms` }}>
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground">{i + 1}</span>
+              <h3 className="mt-4 font-semibold">{s.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      <Section id="team" eyebrow="Біздің команда" title="Команда мүшелері">
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-3">
+          {members.map((m, i) => (
+            <div key={i} className="glass reveal p-4 text-center">
+              {m.photo ? <img src={m.photo} alt={m.name} className="aspect-square w-full rounded-xl object-cover" loading="lazy" /> : <Placeholder label="Фото" className="aspect-square" />}
+              <h3 className="mt-4 font-semibold">{m.name}</h3>
+              <p className="text-sm text-primary">{m.role}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section id="achievements" eyebrow="Жетістіктер" title="Біздің жол" intro="Іс-шаралар мен нәтижелер осы жерге қосылады.">
+        <ol className="relative ml-3 border-l border-primary/30">
+          {achievements.map((a, i) => (
+            <li key={i} className="reveal mb-8 ml-8">
+              <span className="absolute -left-[7px] mt-1.5 h-3.5 w-3.5 rounded-full bg-primary shadow-[0_0_14px_var(--primary)]" />
+              <div className="glass p-5">
+                <time className="text-xs uppercase tracking-widest text-primary">{a.date}</time>
+                <h3 className="mt-1 font-semibold">{a.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{a.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      <Section id="media" eyebrow="Медиа" title="Фото және видео">
+        <h3 className="reveal mb-4 text-lg font-semibold">Жаттығулар</h3>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+          {media.photos.map((p, i) => p.src ? <img key={i} src={p.src} alt={p.caption} className="reveal aspect-[4/3] w-full rounded-xl object-cover" loading="lazy" /> : <Placeholder key={i} label={p.caption} className="reveal aspect-[4/3]" />)}
+        </div>
+        <h3 className="reveal mb-4 mt-10 text-lg font-semibold">Жарыстар</h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          {media.videos.map((v, i) => v.embed ? <iframe key={i} src={v.embed} title={v.caption} className="reveal aspect-video w-full rounded-xl" allowFullScreen /> : <Placeholder key={i} label={`▶ ${v.caption}`} className="reveal aspect-video" />)}
+        </div>
+      </Section>
+
+      <Section id="social" eyebrow="Әлеуметтік желілер" title="Бізді бақылаңыз">
+        <div className="reveal flex flex-wrap gap-4">
+          <a href={social.instagram} target="_blank" rel="noopener noreferrer" className={btnPrimary}>Instagram</a>
+          <a href={social.tiktok} target="_blank" rel="noopener noreferrer" className={btnGhost}>TikTok</a>
+        </div>
+      </Section>
+
+      <Section id="contact" eyebrow="Байланыс" title="Бізге жазыңыз" intro="Серіктестік, сұрақтар немесе ұсыныстар бойынша хабарласыңыз.">
+        <form
+          className="glass reveal grid max-w-2xl gap-4 p-6 hover:translate-y-0"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const f = new FormData(e.currentTarget);
+            const body = `${f.get("message")}\n\n— ${f.get("name")}`;
+            window.location.href = `mailto:${team.email}?subject=${encodeURIComponent("ALEM Robotics сайтынан хат")}&body=${encodeURIComponent(body)}`;
+            setSent(true);
+          }}
+        >
+          <label className="grid gap-1.5 text-sm">Атыңыз
+            <input name="name" required maxLength={80} className="rounded-xl border border-input bg-background/50 px-4 py-3 outline-none focus:border-ring" />
+          </label>
+          <label className="grid gap-1.5 text-sm">Хабарлама
+            <textarea name="message" required maxLength={1000} rows={4} className="rounded-xl border border-input bg-background/50 px-4 py-3 outline-none focus:border-ring" />
+          </label>
+          <button type="submit" className={`${btnPrimary} justify-self-start`}>Жіберу</button>
+          {sent && <p className="text-sm text-primary" role="status">Пошта бағдарламасы ашылды. Рахмет!</p>}
+        </form>
+      </Section>
+
+      <footer className="border-t py-8 text-center text-sm text-muted-foreground">
+        © {new Date().getFullYear()} ALEM Robotics · FLL Team #{team.number}
+      </footer>
     </div>
   );
 }
