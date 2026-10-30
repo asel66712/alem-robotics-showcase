@@ -1,0 +1,4 @@
+CREATE POLICY "admin upload site images" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'site-images' AND public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "admin read site images" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'site-images' AND public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "admin delete site images" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'site-images' AND public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "public read referenced images" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'site-images' AND (EXISTS (SELECT 1 FROM public.site_items WHERE image_url = 'site-images/' || storage.objects.name) OR EXISTS (SELECT 1 FROM public.site_settings WHERE key IN ('robot_image_1','robot_image_2','robot_image_3') AND value = 'site-images/' || storage.objects.name)));
