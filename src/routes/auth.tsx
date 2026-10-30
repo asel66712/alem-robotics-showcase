@@ -1,0 +1,2 @@
+import { createFileRoute, redirect } from '@tanstack/react-router';
+export const Route=createFileRoute('/auth')({beforeLoad:()=>{throw redirect({to:'/admin/login'});},head:()=>({meta:[{title:'ALEM Robotics — Кіру'},{name:'description',content:'ALEM Robotics әкімшісінің кіру беті.'},{property:'og:title',content:'ALEM Robotics — Кіру'},{property:'og:description',content:'Әкімші кіру беті.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]})});
