@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
-import { assertAdmin, itemSchema, settingsSchema } from '@/content/admin-model';
+import { assertAdmin, imageValue, itemSchema, settingsSchema } from '@/content/admin-model';
 import { z } from 'zod';
 
 export const getPublicSite = createServerFn({method:'GET'}).handler(async () => {
