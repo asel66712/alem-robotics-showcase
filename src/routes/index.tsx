@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import {
-  team, social, nav, aboutPoints, robotBlocks, projectSteps, leaders, members, achievements, media,
-} from "@/content/site";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { nav } from "@/content/site";
+import { publicSiteOptions, mapSite } from "@/content/site-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(publicSiteOptions),
   component: Index,
 });
 
@@ -96,6 +97,9 @@ function Header() {
 function Index() {
   useReveal();
   const [sent, setSent] = useState(false);
+  const { data } = useSuspenseQuery(publicSiteOptions);
+  const { settings, team, social, aboutPoints, robotBlocks, projectSteps, leaders, members, achievements, media } = mapSite(data);
+  const robotImg = (src: string, label: string, cls: string) => src ? <img src={src} alt={label} className={`${cls} w-full rounded-xl object-cover`} loading="lazy" /> : <Placeholder label={label} className={cls} />;
   return (
     <div id="top" className="overflow-x-hidden">
       <Header />
@@ -106,7 +110,7 @@ function Index() {
         <div className="relative animate-in fade-in slide-in-from-bottom-6 duration-1000">
           <p className="mb-6 inline-block rounded-full border border-primary/30 px-4 py-1.5 text-xs font-medium tracking-widest text-primary">{team.league.toUpperCase()}</p>
           <h1 className="text-glow text-5xl font-black sm:text-7xl md:text-8xl">ALEM<br />ROBOTICS</h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground md:text-xl">Болашақ инженерлері. Жаңа идеялар. Үлкен мүмкіндіктер.</p>
+          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground md:text-xl">{settings.hero_tagline}</p>
           <div className="mt-8 inline-flex items-center gap-3 rounded-2xl border bg-card px-5 py-3">
             <span className="text-xs uppercase tracking-widest text-muted-foreground">Team number</span>
             <span className="font-display text-2xl font-bold text-primary">{team.number}</span>
@@ -118,17 +122,17 @@ function Index() {
         </div>
       </section>
 
-      <Section id="about" eyebrow="Біз туралы" title="Біз — ALEM Robotics" intro="Біз — FIRST LEGO League Challenge бағдарламасына қатысатын оқушылар командасымыз. Бізді инженерия, бағдарламалау, инновация және командалық жұмыс біріктіреді.">
+      <Section id="about" eyebrow="Біз туралы" title="Біз — ALEM Robotics" intro={settings.about_intro}>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {aboutPoints.map((p, i) => <Card key={p.title} {...p} index={i} />)}
+          {aboutPoints.map((p, i) => <Card key={i} {...p} index={i} />)}
         </div>
       </Section>
 
       <Section id="team" eyebrow="Біздің команда" title="Команда мүшелері">
         <h3 className="reveal mb-4 text-lg font-semibold">Команда жетекшілері</h3>
         <div className="mb-12 grid gap-5 sm:grid-cols-2">
-          {leaders.map((m) => (
-            <div key={m.name} className="glass reveal flex items-center gap-4 p-5">
+          {leaders.map((m, i) => (
+            <div key={i} className="glass reveal flex items-center gap-4 p-5">
               {m.photo ? <img src={m.photo} alt={m.name} className="h-20 w-20 shrink-0 rounded-xl object-cover" loading="lazy" /> : <Placeholder label="Фото" className="h-20 w-20 shrink-0" />}
               <div>
                 <h4 className="font-display font-semibold">{m.name}</h4>
@@ -139,8 +143,8 @@ function Index() {
         </div>
         <h3 className="reveal mb-4 text-lg font-semibold">Команда мүшелері</h3>
         <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
-          {members.map((m) => (
-            <div key={m.name} className="glass reveal p-4 text-center">
+          {members.map((m, i) => (
+            <div key={i} className="glass reveal p-4 text-center">
               {m.photo ? <img src={m.photo} alt={m.name} className="aspect-square w-full rounded-xl object-cover" loading="lazy" /> : <Placeholder label="Фото" className="aspect-square" />}
               <h4 className="mt-4 text-sm font-semibold">{m.name}</h4>
               <p className="text-xs text-primary">{m.role}</p>
@@ -149,23 +153,23 @@ function Index() {
         </div>
       </Section>
 
-      <Section id="robot" eyebrow="Біздің робот" title="Робот және инженерия" intro="Робот сипаттамалары кейін қосылады.">
+      <Section id="robot" eyebrow="Біздің робот" title="Робот және инженерия" intro={settings.robot_intro}>
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="reveal grid grid-cols-2 gap-4">
-            <Placeholder label="Робот фотосы" className="col-span-2 aspect-video" />
-            <Placeholder label="Механизм фотосы" className="aspect-square" />
-            <Placeholder label="Бағдарлама скриншоты" className="aspect-square" />
+            {robotImg(settings.robot_image_1, "Робот фотосы", "col-span-2 aspect-video")}
+            {robotImg(settings.robot_image_2, "Механизм фотосы", "aspect-square")}
+            {robotImg(settings.robot_image_3, "Бағдарлама скриншоты", "aspect-square")}
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {robotBlocks.map((b, i) => <Card key={b.title} {...b} index={i} />)}
+            {robotBlocks.map((b, i) => <Card key={i} {...b} index={i} />)}
           </div>
         </div>
       </Section>
 
-      <Section id="project" eyebrow="Инновациялық жоба" title="BIOGLOW" intro="Біздің инновациялық жобамыз. Толық мәліметтер кейін қосылады.">
+      <Section id="project" eyebrow="Инновациялық жоба" title="BIOGLOW" intro={settings.project_intro}>
         <ol className="grid gap-5 md:grid-cols-5">
           {projectSteps.map((s, i) => (
-            <li key={s.title} className="glass reveal relative p-5" style={{ transitionDelay: `${i * 80}ms` }}>
+            <li key={i} className="glass reveal relative p-5" style={{ transitionDelay: `${i * 80}ms` }}>
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground">{i + 1}</span>
               <h3 className="mt-4 font-semibold">{s.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>
@@ -174,7 +178,7 @@ function Index() {
         </ol>
       </Section>
 
-      <Section id="achievements" eyebrow="Жарыстар мен жетістіктер" title="Біздің жол" intro="Жарыстар мен нәтижелер кейін қосылады.">
+      <Section id="achievements" eyebrow="Жарыстар мен жетістіктер" title="Біздің жол" intro={settings.achievements_intro}>
         <ol className="relative ml-3 border-l border-primary/30">
           {achievements.map((a, i) => (
             <li key={i} className="reveal mb-8 ml-8">
@@ -223,7 +227,7 @@ function Index() {
         </div>
       </Section>
 
-      <Section id="contact" eyebrow="Бізбен байланыс" title="Бізге жазыңыз" intro="Серіктестік, сұрақтар немесе ұсыныстар бойынша хабарласыңыз.">
+      <Section id="contact" eyebrow="Бізбен байланыс" title="Бізге жазыңыз" intro={settings.contact_intro}>
         <form
           className="glass reveal grid max-w-2xl gap-4 p-6 hover:translate-y-0"
           onSubmit={(e) => {
