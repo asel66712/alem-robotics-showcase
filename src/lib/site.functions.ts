@@ -28,7 +28,8 @@ export const saveSettings = createServerFn({method:'POST'}).middleware([requireS
 });
 export const saveItem = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(input=>itemSchema.parse(input)).handler(async ({data,context})=>{
   const role=await context.supabase.rpc('has_role',{_user_id:context.userId,_role:'admin'}); assertAdmin(role.data);
-  const result=await context.supabase.from('site_items').upsert(data).select('id').single();
+  const {id,...fields}=data;
+  const result=await context.supabase.from('site_items').upsert(id ? {...fields,id} : fields).select('id').single();
   if(result.error) throw new Error('Сақтау сәтсіз аяқталды.'); return result.data;
 });
 export const deleteItem = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(input=>z.object({id:z.string().uuid()}).parse(input)).handler(async ({data,context})=>{
