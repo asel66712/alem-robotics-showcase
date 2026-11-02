@@ -200,7 +200,14 @@ function Index() {
         </div>
         <h3 className="reveal mb-4 mt-10 text-lg font-semibold">Жарыстар</h3>
         <div className="grid gap-4 md:grid-cols-2">
-          {media.videos.map((v, i) => v.embed ? <iframe key={i} src={v.embed} title={v.caption} className="reveal aspect-video w-full rounded-xl" allowFullScreen /> : <Placeholder key={i} label={`▶ ${v.caption}`} className="reveal aspect-video" />)}
+          {media.videos.map((v, i) => {
+            const s = toVideoSource(v.embed);
+            if (!s) return <Placeholder key={i} label={`▶ ${v.caption}`} className="reveal aspect-video" />;
+            const tall = /instagram|tiktok/.test(s.src);
+            return s.kind === "file"
+              ? <video key={i} src={s.src} controls playsInline preload="metadata" className="reveal aspect-video w-full rounded-xl bg-card" aria-label={v.caption} />
+              : <iframe key={i} src={s.src} title={v.caption} className={`reveal w-full rounded-xl bg-card ${tall ? "mx-auto h-[640px] max-w-[400px]" : "aspect-video"}`} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen loading="lazy" />;
+          })}
         </div>
       </Section>
 
